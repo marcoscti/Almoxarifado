@@ -17,11 +17,10 @@ class MainWindow(QWidget):
         self.imagem_path = ""
 
         self.setWindowTitle("Almoxarifado")
-        self.resize(700, 500)
+        self.resize(700, 700)
         
         layout = QVBoxLayout()
         
-               
         self.nome_input = QLineEdit()
         self.nome_input.setPlaceholderText("Nome")
 
@@ -30,31 +29,31 @@ class MainWindow(QWidget):
 
         self.num_input = QLineEdit()
         self.num_input.setPlaceholderText("Numeração")
-
-        self.btn_upload = QPushButton("Selecionar Imagem")
-        self.preview = QLabel("Preview")
         self.EstoqueMinimo = QLineEdit()
         self.EstoqueMinimo.setPlaceholderText("Estoque Mínimo")
         self.entrada = QLineEdit()
         self.entrada.setPlaceholderText("Entrada")
         self.saida = QLineEdit()
         self.saida.setPlaceholderText("Saída")
-
+        self.btn_upload = QPushButton("Selecionar Imagem")
+        self.preview = QLabel("Preview")
         self.preview.setFixedHeight(120)
 
         self.btn_salvar = QPushButton("Salvar")
         self.btn_deletar = QPushButton("Deletar")
 
         self.table = QTableWidget()
-        self.table.setColumnCount(5)
-        self.table.setHorizontalHeaderLabels(["ID", "Nome", "CA", "Numeração","Imagem",])
-        
+        self.table.setColumnCount(8)
+        self.table.setHorizontalHeaderLabels(["ID", "Nome", "CA", "Numeração", "Imagem", "Estoque Mínimo", "Entrada", "Saída"])
+
         layout.addWidget(self.nome_input)
         layout.addWidget(self.ca_input)
         layout.addWidget(self.num_input)
         layout.addWidget(self.btn_upload)
         layout.addWidget(self.preview)
         layout.addWidget(self.EstoqueMinimo)
+        layout.addWidget(self.entrada)
+        layout.addWidget(self.saida)
         layout.addWidget(self.btn_salvar)
         layout.addWidget(self.btn_deletar)
         layout.addWidget(self.table)
@@ -83,7 +82,7 @@ class MainWindow(QWidget):
 
             self.imagem_path = file_path
             pixmap = QPixmap(file_path)
-            self.preview.setPixmap(pixmap.scaledToHeight(120))
+            self.preview.setPixmap(pixmap.scaledToHeight(100))
 
     def salvar(self):
         nome = self.nome_input.text()
@@ -127,7 +126,7 @@ class MainWindow(QWidget):
     def selecionar(self, row, _):
         self.produto_selecionado = int(self.table.item(row, 0).text())
         self.nome_input.setText(self.table.item(row, 1).text())
-        self.ca_input.setText(self.table.item(row, 2).text())
+        self.ca_input.setText(self.table.item(row, 2).text().upper())
         self.num_input.setText(self.table.item(row, 3).text())
 
         produtos = self.repo.listar()
@@ -144,6 +143,9 @@ class MainWindow(QWidget):
         self.num_input.clear()
         self.preview.clear()
         self.imagem_path = ""
+        self.EstoqueMinimo.clear()
+        self.entrada.clear()
+        self.saida.clear()
 
     def carregar_dados(self):
         produtos = self.repo.listar()
@@ -155,4 +157,7 @@ class MainWindow(QWidget):
             self.table.setItem(row, 1, QTableWidgetItem(p.nome))
             self.table.setItem(row, 2, QTableWidgetItem(p.ca))
             self.table.setItem(row, 3, QTableWidgetItem(str(p.numeracao)))
-            self.table.setItem(row, 4, QTableWidgetItem(str(p.imagem)))
+            self.table.setItem(row, 4, QTableWidgetItem(p.imagem if p.imagem else ""))
+            self.table.setItem(row, 5, QTableWidgetItem(str(p.estoqueMinimo)))
+            self.table.setItem(row, 6, QTableWidgetItem(str(p.entrada)))
+            self.table.setItem(row, 7, QTableWidgetItem(str(p.saida)))
