@@ -14,11 +14,16 @@ class Database:
     def criar_tabelas(self):
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS Produto (
-                idProduto INTEGER PRIMARY KEY AUTOINCREMENT,
-                nome TEXT,
-                ca TEXT,
-                numeracao INTEGER,
-                imagem TEXT
-            )
+                id_produto INTEGER PRIMARY KEY AUTOINCREMENT,
+                nome_produto TEXT,
+                ca_produto TEXT,
+                numeracao_produto INTEGER,
+                imagem_produto TEXT,
+                estoque_minimo INTEGER,
+                entrada INTEGER,
+                saida INTEGER,
+                created_at DATETIME,
+                updated_at DATETIME
+                            )
         """)
         self.conn.commit()

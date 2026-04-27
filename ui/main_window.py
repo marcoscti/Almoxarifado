@@ -3,11 +3,7 @@ import os
 import shutil
 import time
 
-from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QPushButton, QLineEdit,
-    QTableWidget, QTableWidgetItem, QMessageBox,
-    QFileDialog, QLabel
-)
+from PySide6.QtWidgets import *
 from PySide6.QtGui import QPixmap
 
 from models.produto import Produto
@@ -20,11 +16,12 @@ class MainWindow(QWidget):
         self.produto_selecionado = None
         self.imagem_path = ""
 
-        self.setWindowTitle("Sistema de Produtos")
+        self.setWindowTitle("Almoxarifado")
         self.resize(700, 500)
-
+        
         layout = QVBoxLayout()
-
+        
+               
         self.nome_input = QLineEdit()
         self.nome_input.setPlaceholderText("Nome")
 
@@ -36,20 +33,28 @@ class MainWindow(QWidget):
 
         self.btn_upload = QPushButton("Selecionar Imagem")
         self.preview = QLabel("Preview")
+        self.EstoqueMinimo = QLineEdit()
+        self.EstoqueMinimo.setPlaceholderText("Estoque Mínimo")
+        self.entrada = QLineEdit()
+        self.entrada.setPlaceholderText("Entrada")
+        self.saida = QLineEdit()
+        self.saida.setPlaceholderText("Saída")
+
         self.preview.setFixedHeight(120)
 
         self.btn_salvar = QPushButton("Salvar")
         self.btn_deletar = QPushButton("Deletar")
 
         self.table = QTableWidget()
-        self.table.setColumnCount(4)
-        self.table.setHorizontalHeaderLabels(["ID", "Nome", "CA", "Numeração"])
-
+        self.table.setColumnCount(5)
+        self.table.setHorizontalHeaderLabels(["ID", "Nome", "CA", "Numeração","Imagem",])
+        
         layout.addWidget(self.nome_input)
         layout.addWidget(self.ca_input)
         layout.addWidget(self.num_input)
         layout.addWidget(self.btn_upload)
         layout.addWidget(self.preview)
+        layout.addWidget(self.EstoqueMinimo)
         layout.addWidget(self.btn_salvar)
         layout.addWidget(self.btn_deletar)
         layout.addWidget(self.table)
@@ -139,3 +144,15 @@ class MainWindow(QWidget):
         self.num_input.clear()
         self.preview.clear()
         self.imagem_path = ""
+
+    def carregar_dados(self):
+        produtos = self.repo.listar()
+
+        self.table.setRowCount(len(produtos))
+
+        for row, p in enumerate(produtos):
+            self.table.setItem(row, 0, QTableWidgetItem(str(p.idProduto)))
+            self.table.setItem(row, 1, QTableWidgetItem(p.nome))
+            self.table.setItem(row, 2, QTableWidgetItem(p.ca))
+            self.table.setItem(row, 3, QTableWidgetItem(str(p.numeracao)))
+            self.table.setItem(row, 4, QTableWidgetItem(str(p.imagem)))
