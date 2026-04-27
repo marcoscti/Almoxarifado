@@ -104,12 +104,12 @@ class MainWindow(QWidget):
 
             shutil.copy(self.imagem_path, destino)
             imagem_final = destino
-
+            
         if self.produto_selecionado:
-            produto = Produto(self.produto_selecionado, nome, ca, int(numeracao), imagem_final)
+            produto = Produto(self.produto_selecionado, nome, ca, int(numeracao), imagem_final if imagem_final else None, estoqueMinimo=int(self.EstoqueMinimo.text() or 0), entrada=int(self.entrada.text() or 0), saida=int(self.saida.text() or 0))
             self.repo.atualizar(produto)
         else:
-            produto = Produto(None, nome, ca, int(numeracao), imagem_final)
+            produto = Produto(None, nome, ca, int(numeracao), imagem_final if imagem_final else None, estoqueMinimo=int(self.EstoqueMinimo.text() or 0), entrada=int(self.entrada.text() or 0), saida=int(self.saida.text() or 0))
             self.repo.criar(produto)
 
         self.limpar()
@@ -128,6 +128,10 @@ class MainWindow(QWidget):
         self.nome_input.setText(self.table.item(row, 1).text())
         self.ca_input.setText(self.table.item(row, 2).text().upper())
         self.num_input.setText(self.table.item(row, 3).text())
+        self.EstoqueMinimo.setText(self.table.item(row, 5).text())
+        self.entrada.setText(self.table.item(row, 6).text())
+        self.saida.setText(self.table.item(row, 7).text())
+        
 
         produtos = self.repo.listar()
         produto = next((p for p in produtos if p.idProduto == self.produto_selecionado), None)

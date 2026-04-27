@@ -19,7 +19,11 @@ class ProdutoRepository:
         try:
             self.db.cursor.execute("SELECT * FROM Produto")
             rows = self.db.cursor.fetchall()
-            return [Produto(*row) for row in rows]
+            if len(rows) > 0:
+                return [Produto(*row) for row in rows]
+            else:
+                print("Nenhum produto encontrado.")
+                return []
         except Exception as e:
             print(f"Erro ao listar produtos: {e}")
             return []
