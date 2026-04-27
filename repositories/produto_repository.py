@@ -45,3 +45,15 @@ class ProdutoRepository:
             self.db.conn.commit()
         except Exception as e:
             print(f"Erro ao deletar produto: {e}")
+
+    def buscar_por_id(self, idProduto):
+        try:
+            self.db.cursor.execute("SELECT * FROM Produto WHERE id_produto = ?", (idProduto,))
+            row = self.db.cursor.fetchone()
+            if row:
+                return Produto(*row)
+            else:
+                return None
+        except Exception as e:
+            print(f"Erro ao buscar produto: {e}")
+            return None

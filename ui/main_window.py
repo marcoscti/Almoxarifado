@@ -1,4 +1,5 @@
 
+from datetime import datetime
 import os
 import shutil
 import time
@@ -105,11 +106,26 @@ class MainWindow(QWidget):
             shutil.copy(self.imagem_path, destino)
             imagem_final = destino
             
+        old_image = None
         if self.produto_selecionado:
-            produto = Produto(self.produto_selecionado, nome, ca, int(numeracao), imagem_final if imagem_final else None, estoqueMinimo=int(self.EstoqueMinimo.text() or 0), entrada=int(self.entrada.text() or 0), saida=int(self.saida.text() or 0))
+            produtos = self.repo.listar()
+            produto_atual = next((p for p in produtos if p.idProduto == self.produto_selecionado), None)
+            if not imagem_final and produto_atual:
+                imagem_final = produto_atual.imagem
+            if self.imagem_path and produto_atual:
+                old_image = produto_atual.imagem
+            
+        if self.produto_selecionado:
+            produto = Produto(self.produto_selecionado, nome, ca, int(numeracao), imagem_final, estoqueMinimo=int(self.EstoqueMinimo.text() or 0), entrada=int(self.entrada.text() or 0), saida=int(self.saida.text() or 0), updated_at=datetime.now())
             self.repo.atualizar(produto)
+            if old_image and os.path.exists(old_image):
+                os.remove(old_image)
+            produto_atualizado = self.repo.buscar_por_id(self.produto_selecionado)
+            if produto_atualizado and produto_atualizado.imagem and os.path.exists(produto_atualizado.imagem):
+                pixmap = QPixmap(produto_atualizado.imagem)
+                self.preview.setPixmap(pixmap.scaledToHeight(120))
         else:
-            produto = Produto(None, nome, ca, int(numeracao), imagem_final if imagem_final else None, estoqueMinimo=int(self.EstoqueMinimo.text() or 0), entrada=int(self.entrada.text() or 0), saida=int(self.saida.text() or 0))
+            produto = Produto(None, nome, ca, int(numeracao), imagem_final, estoqueMinimo=int(self.EstoqueMinimo.text() or 0), entrada=int(self.entrada.text() or 0), saida=int(self.saida.text() or 0), updated_at=datetime.now(), created_at=datetime.now())
             self.repo.criar(produto)
 
         self.limpar()

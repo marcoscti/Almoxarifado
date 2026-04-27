@@ -1,6 +1,9 @@
 
+from datetime import datetime
+
+
 class Produto:
-    def __init__(self, idProduto: int = None, nome: str = None, ca: str = None, numeracao: int = None, imagem: str = None, estoqueMinimo: int = None, entrada: int = None, saida: int = None, created_at: str = None, updated_at: str = None):
+    def __init__(self, idProduto: int = None, nome: str = None, ca: str = None, numeracao: int = None, imagem: str = None, estoqueMinimo: int = None, entrada: int = None, saida: int = None, created_at = datetime or None, updated_at = datetime or None):
         self.idProduto = idProduto
         self.nome = nome
         self.ca = ca
