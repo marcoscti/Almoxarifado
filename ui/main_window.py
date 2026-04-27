@@ -5,7 +5,7 @@ import shutil
 import time
 
 from PySide6.QtWidgets import *
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QIcon, QPixmap
 
 from models.produto import Produto
 
@@ -19,7 +19,8 @@ class MainWindow(QWidget):
 
         self.setWindowTitle("Almoxarifado")
         self.resize(700, 700)
-        
+        self.windowIcon = QIcon("icon.png")
+        self.setWindowIcon(self.windowIcon)
         layout = QVBoxLayout()
         
         self.nome_input = QLineEdit()
